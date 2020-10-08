@@ -1,0 +1,8 @@
+./simDER option13.txt
+./simDER option14.txt
+./simDER option15.txt
+./simDER option16.txt
+./simDER option17.txt
+./simDER option18.txt
+./simDER option19.txt
+./simDER option20.txt

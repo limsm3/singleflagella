@@ -1,0 +1,25 @@
+helixradius 0.006
+helixpitch 0.019
+rodRadius 0.0016
+youngM 1.2e6
+Poisson 0.5
+deltaTime 1e-4
+totalTime 120
+tol 1.0e-4
+stol 1.0e-4
+maxIter 10000
+maxIterContact 1000
+density 1000
+gVector 0.0 0.0 0.0
+viscosity 1e0
+epsilon 1.02e-3
+axisLengthInput 0.032
+deltaLengthInput 5e-3
+headSize 0.01
+render 0
+saveData 1
+input-file omega1.txt
+use-RSS false
+include-contact true
+C-translation 1.0
+C-rotation 1.0

@@ -18,7 +18,7 @@ externalHeadForce::externalHeadForce(elasticRod &m_rod, timeStepper &m_stepper,
 	
 	f.setZero(3);
 	ForceVec = VectorXd::Zero(rod->ndof); // added
-	
+	f_head = 0;
 	headNode = rod->headNode; // index of head node
 	delta_head = headSize;
 }
@@ -48,13 +48,12 @@ void externalHeadForce::computeFh()
 	// Force on head against rotation (can be improved)
 	//
 	omega_head = rod->getOmega(headNode);	
-	f = - C_rotation * 8.0 * M_PI * viscosity * pow(headSize, 3.0) * omega_head / (delta_head * delta_head); // force on headNode+1
-	for (int k=3;)
-	{
-		ind = 4 * (headNode) + k;
-		stepper->addForce(ind, - f[k]); // subtracting external force
-		ForceVec(ind) = ForceVec(ind) + f[k]; // added	
-	}
+	f_head = - C_rotation * 8.0 * M_PI * viscosity * pow(headSize, 3.0) * omega_head ; // force on headNode+1
+
+	ind = 4 * (headNode) + 3;
+	stepper->addForce(ind, - f_head); // subtracting external force
+	ForceVec(ind) = ForceVec(ind) + f_head; // added	
+
 
 }
 
@@ -79,16 +78,14 @@ void externalHeadForce::computeJh()
 	//
 	// Force on head against rotation (can be improved)
 	//
-	jac = - C_rotation * 8.0 * M_PI * viscosity * pow(headSize, 3.0) / (delta_head * delta_head) * Id3 / dt; // force on headNode+1
+	double jac_head = - C_rotation * 8.0 * M_PI * viscosity * pow(headSize, 3.0)  / dt; // force on headNode+1
 	
-	for (int kx = 3;)
-	{
-		indx = 4 * (headNode) + kx;
-		for (int ky = 0; ky < 3; ky++)
-		{
-			indy = 4 * (headNode) + ky;
-			stepper->addJacobian(indx, indy, - jac(kx,ky)); // subtracting external force
-		}
-	}
+
+		indx = 4 * (headNode) + 3;
+		int ky = 3;
+		indy = 4 * (headNode) + ky;
+	    stepper->addJacobian(indx, indy, - jac_head); // subtracting external force
+		
+	
 
 }

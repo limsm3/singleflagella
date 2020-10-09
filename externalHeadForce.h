@@ -27,6 +27,7 @@ private:
     double C_translation, C_rotation; // numerical prefactors for translation and rotation
     int headNode;
     double headSize;
+	double f_head;
 	double delta_head;
 	double omega_head;
 };

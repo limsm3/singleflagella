@@ -34,7 +34,7 @@ nProcesses = 12  #Number of processes to be run simultaneously
 last_time = time.time()
 
 if len(sys.argv) == 1:
-  CmdFile = 'Commands1.txt'
+  CmdFile = 'Commands2.txt'
 else:
   CmdFile = sys.argv[1]
 

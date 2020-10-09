@@ -1,5 +1,5 @@
 helixradius 0.006
-helixpitch 0.0318
+helixpitch 0.0445
 rodRadius 0.0016
 youngM 1.255e6
 Poisson 0.5
@@ -14,7 +14,7 @@ gVector 0.0 0.0 0.0
 viscosity 1.0e0
 epsilon 1.02e-3
 axisLengthInput 0.095
-deltaLengthInput 5e-3
+deltaLengthInput 4e-3
 headSize 0.031
 render 0
 saveData 1

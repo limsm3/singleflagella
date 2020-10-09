@@ -37,14 +37,14 @@ static void Key(unsigned char key, int x, int y)
 void initGL() 
 {
 	glClearColor(0.7f, 0.7f, 0.7f, 0.0f); // Set background color to black and opaque
-	glClearDepth(5.0f);                   // Set background depth to farthest
+	glClearDepth(2.0f);                   // Set background depth to farthest
 	//glEnable(GL_DEPTH_TEST);   // Enable depth testing for z-culling
 	//glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
 	glShadeModel(GL_SMOOTH);   // Enable smooth shading
-	//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
 
 	glLoadIdentity();
-	gluLookAt(0.1, -0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5);
+	gluLookAt(0.5, -0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 100);
 	// void gluLookAt(	GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 	//		GLdouble centerX, GLdouble centerY, GLdouble centerZ, GLdouble upX,
 	//		GLdouble upY, GLdouble upZ);
@@ -62,7 +62,7 @@ void display(void)
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw axis
-		double axisLen = 1;
+		double axisLen = 0.5;
 		glLineWidth(0.5);
 		
 		glBegin(GL_LINES);

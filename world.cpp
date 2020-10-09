@@ -57,11 +57,12 @@ world::world(setInput &m_inputData)
 	double nTurn = axisLengthInput / helixpitch;
     double newRodLength = nTurn * sqrt( (2 * M_PI * helixradius) * (2 * M_PI * helixradius) + helixpitch * helixpitch );
 
-    RodLength = 2*newRodLength;
+    RodLength = 2*newRodLength;*/
 
-    int newNe = RodLength / deltaLengthInput;*/
+	int newNe = flagellaLength / deltaLengthInput;
 
-    //numVertices = newNe + 1; 
+    numVertices = newNe + 1; 
+	int totVertices = numVertices+3;
 
 	shearM = youngM/(2.0*(1.0+Poisson));					// shear modulus
 	
@@ -156,22 +157,21 @@ void world::CoutData(ofstream &outfile)
 	
 	if (fmod(timeStep,1000)==0) 
 	{
+		/*
 		for (int i = 0; i < rod->nv; i++)
 		{
 			Vector3d xCurrent = 100 * rod->getVertex(i);
 
 			outfile << currentTime << ", 0, " << xCurrent(0) << ", " << xCurrent(1) << ", " << xCurrent(2) << ", " << endl;
 		}
-		/*
+	*/
 		Vector3d xCurrent = rod->getVertex(rod->headNode);
-		Vector3d xCurrent2 = rod->getVertex(rod->headNode-1);
+		Vector3d xCurrent2 = rod->getVertex(rod->headNode+1);
 		Vector3d headForce = f_0_rod_0;
-		Vector3d leftflagella = f_1_rod_0;
-		Vector3d rightflagella = f_2_rod_0;
 		//double Forcehead = computeReactionForce();
 
-		outfile << currentTime << " " << xCurrent(0) << " " << xCurrent(1) << " " << xCurrent(2) << " " << xCurrent2(0) << " " << xCurrent2(1) << " " << xCurrent2(2) << " " << headForce(0) << " " << headForce(1) << " " << headForce(2) < < " " << xCurrent2(2) << " " << headForce(0) << " " << headForce(1) << " " << headForce(2) << " " << leftflagella(0) << " " << leftflagella(1) << " " << leftflagella(2) < <  " " << rightflagella(0) << " " << rightflagella(1) << " " << rightflagella(2) << endl;
-	*/
+		outfile << currentTime << " " << xCurrent(0) << " " << xCurrent(1) << " " << xCurrent(2) << " " << xCurrent2(0) << " " << xCurrent2(1) << " " << xCurrent2(2) << " " << headForce(0) << " " << headForce(1) << " " << headForce(2) << endl;
+
 	}
 		/*
 	for (int i = 0; i < rod->nv; i++)
@@ -225,7 +225,7 @@ void world::setRodStepper()
 	// Find out the tolerance, e.g. how small is enough?
 	characteristicForce = M_PI * pow(rodRadius ,4)/4.0 * youngM / pow(RodLength, 2);
 	forceTol = tol * characteristicForce;
-	int totVertices = 2 * (numVertices) + 7;
+	int totVertices = 1 * (numVertices) + 3;
 	ne = totVertices - 1;
 	nv = totVertices;
 
@@ -243,7 +243,7 @@ void world::rodGeometry()
 
 	int newNe = flagellaLength / deltaLengthInput;
 
-	numVertices = newNe + 1;
+	int numVertices = newNe + 1;
 	int totVertices = 1* (numVertices) + 3; // NOTE THIS CHANGE
 	vertices = MatrixXd(totVertices, 3);
 
@@ -254,24 +254,26 @@ void world::rodGeometry()
 	double delta_l = flagellaLength / (numVertices - 1);
 	double RodLength = flagellaLength*1 + helixradius + delta_l*2; //RODLENGTH CORRECTED
 
-	vertices(0, 0) = 0.0;
+	vertices(0, 0) = -2.0 * delta_l;
 	vertices(0, 1) = 0.0;
 	vertices(0, 2) = 0.0;
 
-	vertices(1, 0) = - delta_l;
+	vertices(1, 0) = -delta_l;
 	vertices(1, 1) = 0.0;
 	vertices(1, 2) = 0.0;
 
-	vertices(2, 0) = - 2.0 * delta_l;
+	vertices(2, 0) = 0.0;
 	vertices(2, 1) = 0.0;
 	vertices(2, 2) = 0.0;
-	
-	int j = 3;
+
+
+
+	int j = 0;
 	for (double tt = 0.0; j < numVertices; tt += delta_t)
 	{
-		vertices(j, 0) = helixB * tt;
-		vertices(j, 1) = helixA * cos(tt);
-		vertices(j, 2) = -helixA * sin(tt);
+		vertices(j+3, 0) = helixB * tt;
+		vertices(j+3, 1) = helixA * cos(tt);
+		vertices(j+3, 2) = -helixA * sin(tt);
 		j++;
 	}
 
@@ -619,17 +621,9 @@ void world::computeReactionForce()
 	
 	int k = rod->headNode;
 
-	f_1_rod_0(0) = reactionForce(4 * (k - 1));
-	f_1_rod_0(1) = reactionForce(4 * (k - 1) + 1);
-	f_1_rod_0(2) = reactionForce(4 * (k - 1) + 2);
-
 	f_0_rod_0(0) = reactionForce(4*k); 
 	f_0_rod_0(1) = reactionForce(4*k+1); 
 	f_0_rod_0(2) = reactionForce(4*k+2); 
-
-	f_2_rod_0(0) = reactionForce(4*(k+1));
-	f_2_rod_0(1) = reactionForce(4 * (k + 1)+1);
-	f_2_rod_0(2) = reactionForce(4 * (k + 1) + 2);
 
 	//f_rod_0 = f_0_rod_0 + f_1_rod_0;
 }

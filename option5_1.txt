@@ -1,5 +1,5 @@
 helixradius 0.006
-helixpitch 0.0318
+helixpitch 0.0572
 rodRadius 0.0016
 youngM 1.255e6
 Poisson 0.5

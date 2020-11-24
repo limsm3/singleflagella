@@ -1,0 +1,3 @@
+./simDER2 option4_5.txt -- input-file omega_compare2.txt totalTime 100
+./simDER2 option5_5.txt -- input-file omega_compare2.txt totalTime 100
+./simDER2 option2_5.txt -- input-file omega_compare2.txt totalTime 100

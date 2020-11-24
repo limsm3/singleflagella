@@ -21,6 +21,7 @@ private:
 	timeStepper *stepper;
 
     int ci;
+    int headNode;
     double chi;
     double len;
     double kappa1,kappa2;
@@ -52,6 +53,7 @@ private:
     MatrixXd Jbb;
 
     Matrix2d EIMat;
+    Matrix2d EI2Mat;
     Matrix3d Id3;
     Matrix3d tt_o_tt;
     Matrix3d tilde_d1_3d,tilde_d2_3d;

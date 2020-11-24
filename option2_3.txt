@@ -8,18 +8,18 @@ totalTime 120
 tol 1.0e-4
 stol 1.0e-4
 maxIter 10000
-maxIterContact 10000
+maxIterContact 5000
 density 1260
 gVector 0.0 0.0 0.0
 viscosity 1.0e0
-epsilon 1.02e-3
+epsilon 9e-5
 axisLengthInput 0.095
-deltaLengthInput 5e-3
+deltaLengthInput 4e-3
 headSize 0.031
 render 0
 saveData 1
 input-file omega5.txt
 use-RSS true
 include-contact true
-C-translation 8.4	
+C-translation 4.8	
 C-rotation 0.7

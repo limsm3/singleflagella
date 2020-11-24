@@ -44,7 +44,7 @@ void initGL()
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
 
 	glLoadIdentity();
-	gluLookAt(0.5, -0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 100);
+	gluLookAt(0.5, -0.5, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 100);
 	// void gluLookAt(	GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 	//		GLdouble centerX, GLdouble centerY, GLdouble centerZ, GLdouble upX,
 	//		GLdouble upY, GLdouble upZ);

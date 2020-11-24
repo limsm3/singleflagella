@@ -39,12 +39,14 @@ void RegularizedStokeslet::prepareForViscousForce()
 		uPos = rod->getVertexOld(i);
 		uVelocity = rod->getVelocityOld(i);
 
-		VelocityVec(3*i) = uVelocity(0);
-		VelocityVec(3*i+1) = uVelocity(1);
-		VelocityVec(3*i+2) = uVelocity(2);
+		VelocityVec(3 * i) = uVelocity(0);
+		VelocityVec(3 * i + 1) = uVelocity(1);
+		VelocityVec(3 * i + 2) = uVelocity(2);
 
 		for (int j = 0; j < rod->ne; j++)
 		{
+
+
 			y_0 = rod->getVertexOld(j);
 			y_1 = rod->getVertexOld(j+1);
 
@@ -56,17 +58,16 @@ void RegularizedStokeslet::prepareForViscousForce()
 
 			R_0 = sqrt( x_0.norm() * x_0.norm() + epsilon * epsilon );
 			R_1 = sqrt( x_1.norm() * x_1.norm() + epsilon * epsilon );
-
 			computeTnumber();
 
-			M2 = ( (T1_1 + epsilon*epsilon*T1_3)*Id3 + T1_3*(x_0*x_0.adjoint()) + T2_3*(x_0*vDirection.adjoint()+vDirection*x_0.adjoint()) + T3_3*(vDirection*vDirection.adjoint()) );
-			M1 = ( (T0_1 + epsilon*epsilon*T0_3)*Id3 + T0_3*(x_0*x_0.adjoint()) + T1_3*(x_0*vDirection.adjoint()+vDirection*x_0.adjoint()) + T2_3*(vDirection*vDirection.adjoint()) ) - M2;
+			M2 = ( (T1_1 + epsilon*epsilon*T1_3)*Id3 + T1_3*(x_0*x_0.transpose()) + T2_3*(x_0*vDirection.transpose()+vDirection*x_0.transpose()) + T3_3*(vDirection*vDirection.transpose()) );
+			M1 = ( (T0_1 + epsilon*epsilon*T0_3)*Id3 + T0_3*(x_0*x_0.transpose()) + T1_3*(x_0*vDirection.transpose()+vDirection*x_0.transpose()) + T2_3*(vDirection*vDirection.transpose()) ) - M2;
 
 			A.block(3*i,3*j,3,3) = A.block(3*i,3*j,3,3) + M1;
 			A.block(3*i,3*(j+1),3,3) = A.block(3*i,3*(j+1),3,3) + M2;
 		}
-	}
-	ViscousForce = -A.ldlt().solve(VelocityVec) * 8 * M_PI * viscosity;
+		}
+	ViscousForce = -A.ldlt().solve(8 * M_PI * viscosity * VelocityVec);
 	/*for (int i = 0; i < rod->nv; i++)
 	{
 		VelocityVec = rod->getVelocity(i)
@@ -90,7 +91,7 @@ void RegularizedStokeslet::computeFrs()
 			ForceVec(4*i+j) = ViscousForce(3*i+j);
 		}
 	}
-	for (int i = rod->headNode+2 ; i < rod->nv; i++)
+	for (int i = rod->headNode + 2; i < rod->nv; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
@@ -108,8 +109,8 @@ void RegularizedStokeslet::computeJrs()
 
 void RegularizedStokeslet::computeTnumber()
 {
-	T0_1 = ( log( edgeLength * R_1 + x_1.dot(vDirection) ) - log( edgeLength * R_0 + x_0.dot(vDirection) ) ) / edgeLength;
-	T0_3 = - ( 1/(R_1*(edgeLength * R_1 + x_1.dot(vDirection))) - 1/(R_0*(edgeLength * R_0 + x_0.dot(vDirection))) );
+	T0_1 = (log(edgeLength * R_1 + (x_0.dot(vDirection)+edgeLength*edgeLength)) - log(edgeLength * R_0 + x_0.dot(vDirection))) / edgeLength;
+	T0_3 = (-1 / (R_1 * (edgeLength * R_1 + (x_0.dot(vDirection) + edgeLength * edgeLength)))) - (-1 / (R_0 * (edgeLength * R_0 + (x_0.dot(vDirection)))));
 	T1_1 = (R_1/(edgeLength*edgeLength) - R_0/(edgeLength*edgeLength)) - T0_1 * x_0.dot(vDirection) / (edgeLength*edgeLength);
 	T1_3 = - (1/(R_1*edgeLength*edgeLength) - 1/(R_0*edgeLength*edgeLength)) - T0_3 * x_0.dot(vDirection) / (edgeLength*edgeLength);
 	T2_3 = - (1/(R_1*edgeLength*edgeLength) - 0/(R_0*edgeLength*edgeLength)) + T0_1/(edgeLength*edgeLength) - T1_3 * x_0.dot(vDirection) / (edgeLength*edgeLength);

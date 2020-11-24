@@ -62,7 +62,7 @@ world::world(setInput &m_inputData)
 	int newNe = flagellaLength / deltaLengthInput;
 
     numVertices = newNe + 1; 
-	int totVertices = numVertices+3;
+	int totVertices = numVertices+4;
 
 	shearM = youngM/(2.0*(1.0+Poisson));					// shear modulus
 	
@@ -134,7 +134,7 @@ void world::OpenFile(ofstream &outfile)
     name << "_helixRadius_" << helixradius;
 	name << "_omega_" << omegaSeries[currentOmegaIndex];
 	name << "_totalTime_" << totalTime;
-	name << ".txt";
+	name << "simDER3.txt";
 
     outfile.open(name.str().c_str());
     outfile.precision(10);	
@@ -165,14 +165,20 @@ void world::CoutData(ofstream &outfile)
 			outfile << currentTime << ", 0, " << xCurrent(0) << ", " << xCurrent(1) << ", " << xCurrent(2) << ", " << endl;
 		}
 	*/
+
 		Vector3d xCurrent = rod->getVertex(rod->headNode);
 		Vector3d xCurrent2 = rod->getVertex(rod->headNode+1);
+		Vector3d xCurrent3 = rod->getVertex(rod->headNode + 2);
+		Vector3d xendnode = rod->getVertex(rod->nv-1);
+		double headrotation = rod->getTheta(rod->headNode);
 		Vector3d headForce = f_0_rod_0;
+		Vector3d vechead = rod->getVertex(rod->headNode)-rod->getVertex(rod->headNode+1);
 		//double Forcehead = computeReactionForce();
 
-		outfile << currentTime << " " << xCurrent(0) << " " << xCurrent(1) << " " << xCurrent(2) << " " << xCurrent2(0) << " " << xCurrent2(1) << " " << xCurrent2(2) << " " << headForce(0) << " " << headForce(1) << " " << headForce(2) << endl;
+		outfile << currentTime << " " << xCurrent(0) << " " << xCurrent(1) << " " << xCurrent(2) << " " << xCurrent2(0) << " " << xCurrent2(1) << " " << xCurrent2(2) << " " << xCurrent3(0) << " " << xCurrent3(1) << " " << xCurrent3(2) << " " << headForce(0) << " " << headForce(1) << " " << headForce(2) << " " << vechead(0) << " " << vechead(1) << " " << vechead(2) << " " << headrotation << " " << xendnode(0) << " " << xendnode(1) << " " << xendnode(2) << endl;
 
 	}
+		
 		/*
 	for (int i = 0; i < rod->nv; i++)
 	{
@@ -244,7 +250,7 @@ void world::rodGeometry()
 	int newNe = flagellaLength / deltaLengthInput;
 
 	int numVertices = newNe + 1;
-	int totVertices = 1* (numVertices) + 3; // NOTE THIS CHANGE
+	int totVertices = 1* (numVertices) + 4; // NOTE THIS CHANGE
 	vertices = MatrixXd(totVertices, 3);
 
 	double helixT = flagellaLength / sqrt(helixA * helixA + helixB * helixB);
@@ -258,7 +264,7 @@ void world::rodGeometry()
 	vertices(0, 1) = 0.0;
 	vertices(0, 2) = 0.0;
 
-	vertices(1, 0) = -delta_l;
+	vertices(1, 0) = - delta_l;
 	vertices(1, 1) = 0.0;
 	vertices(1, 2) = 0.0;
 
@@ -266,14 +272,16 @@ void world::rodGeometry()
 	vertices(2, 1) = 0.0;
 	vertices(2, 2) = 0.0;
 
-
+	vertices(3, 0) = delta_l;
+	vertices(3, 1) = 0.0;
+	vertices(3, 2) = 0.0;
 
 	int j = 0;
 	for (double tt = 0.0; j < numVertices; tt += delta_t)
 	{
-		vertices(j+3, 0) = helixB * tt;
-		vertices(j+3, 1) = helixA * cos(tt);
-		vertices(j+3, 2) = -helixA * sin(tt);
+		vertices(j + 4, 0) = delta_l + helixB * tt;
+		vertices(j+4, 1) = helixA * cos(tt);
+		vertices(j+4, 2) = -helixA * sin(tt);
 		j++;
 	}
 
@@ -281,11 +289,8 @@ void world::rodGeometry()
 
 void world::rodBoundaryCondition()
 {
-/*
-	rod->setVertexBoundaryCondition(rod->getVertex(numVertices+2), numVertices+2);
-	rod->setVertexBoundaryCondition(rod->getVertex(numVertices+1), numVertices+1);
-	rod->setVertexBoundaryCondition(rod->getVertex(numVertices+3), numVertices+3);
-*/
+
+//	rod->setVertexBoundaryCondition(rod->getVertex(0), 0);
 }
 	
 
@@ -298,7 +303,7 @@ void world::updateTimeStep()
 	
 	deltaTwist = omegaSeries[currentOmegaIndex] * (2.0*M_PI/60.0) * deltaTime;
 
-    rod->setTwistBoundaryCondition(rod->undeformedTwist(1) + deltaTwist, 1); // NOTE THIS CHANGE
+    rod->setTwistBoundaryCondition(rod->undeformedTwist(2) + deltaTwist, 2); // NOTE THIS CHANGE
     /*rod->setTwistBoundaryCondition(rod->undeformedTwist(numVertices+5) + deltaTwist, (numVertices+5));
     /* rod->setTwistBoundaryCondition(rod->undeformedTwist(numVertices-1) - deltaTwist, (numVertices-1));
 	rod->setTwistBoundaryCondition(rod->undeformedTwist(numVertices+3) - deltaTwist, (numVertices+3)); */

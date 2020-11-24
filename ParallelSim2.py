@@ -34,7 +34,7 @@ nProcesses = 3  #Number of processes to be run simultaneously
 last_time = time.time()
 
 if len(sys.argv) == 1:
-  CmdFile = 'Commands3.txt'
+  CmdFile = 'Commandsrender.txt'
 else:
   CmdFile = sys.argv[1]
 

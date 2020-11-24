@@ -1,0 +1,5 @@
+./simDER option5_1.txt
+./simDER option5_2.txt
+./simDER option5_3.txt
+./simDER option5_4.txt
+

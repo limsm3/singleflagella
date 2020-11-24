@@ -32,6 +32,7 @@ elasticBendingForce::elasticBendingForce(elasticRod &m_rod, timeStepper &m_stepp
     f = VectorXd::Zero(11);
 
     ForceVec = VectorXd::Zero(rod->ndof);
+    headNode = rod->headNode;
 }
 
 elasticBendingForce::~elasticBendingForce()
@@ -85,11 +86,17 @@ void elasticBendingForce::computeFb()
 
     for (int i=1; i < rod->ne; i++)
     {
-        ci = 4*i-4;
-        relevantPart.col(0) = gradKappa1.row(i);
-        relevantPart.col(1) = gradKappa2.row(i);
-        kappaL = (rod->kappa).row(i) - (rod->kappaBar).row(i);
-        f = - relevantPart * EIMat * kappaL / rod->voronoiLen(i-1);
+        
+
+        {
+            ci = 4 * i - 4;
+            relevantPart.col(0) = gradKappa1.row(i);
+            relevantPart.col(1) = gradKappa2.row(i);
+            kappaL = (rod->kappa).row(i) - (rod->kappaBar).row(i);
+            f = -relevantPart * EIMat * kappaL / rod->voronoiLen(i - 1);
+        }
+        
+
 
         for (int k = 0; k < 11; k++)
 		{
@@ -106,6 +113,7 @@ void elasticBendingForce::computeJb()
 {
 	for(int i=1; i < rod->ne;i++)
     {
+
         norm_e = rod->edgeLen(i-1);
         norm_f = rod->edgeLen(i);
         te = rod->tangent.row(i-1);
